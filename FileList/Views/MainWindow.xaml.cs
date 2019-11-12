@@ -37,8 +37,7 @@ namespace FileList
                 string[] dataString = (string[])e.Data.GetData(DataFormats.FileDrop);
 
                 _viewModel.TargetPath = dataString[0];
-                _viewModel.SaveTargetPath = dataString[0];
-            }
+            }        
         }
 
 
