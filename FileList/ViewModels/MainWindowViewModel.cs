@@ -44,7 +44,7 @@ namespace FileList.ViewModels
             get { return _targetPath; }
             set {
                 _targetPath = value;
-                SaveTargetPath = _targetPath + @"\FileList_" + DateTime.Now.ToString("yyMMddhmmss") + ".xlsx";
+                SaveTargetPath = _targetPath + @"\FileList_" + DateTime.Now.ToString("yyMMdd_ms") + ".xlsx";
                 OnPropertyChanged("TargetPath");
                 OnPropertyChanged("SaveTargetPath");
             }
