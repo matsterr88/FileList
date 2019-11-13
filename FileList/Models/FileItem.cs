@@ -27,8 +27,29 @@ namespace FileList.Models
     {
         public override int Compare(FileItem x, FileItem y)
         {
-            if (x.FullPath.Equals(y.FullPath)) return 0;
-            return x.Path.CompareTo(y.Path);
+            if (x.Path.Equals(y.Path))
+            {
+                if (x.FileName.Equals(y.FileName))
+                {
+                    return 0;
+                }
+
+                return x.FileName.CompareTo(y.FileName);
+            }
+            else
+            {
+                return x.Path.CompareTo(y.Path);
+            }
+            
         }
     }
+
+    //class FileListComparerByFileName : Comparer<FileItem>
+    //{
+    //    public override int Compare(FileItem x, FileItem y)
+    //    {
+    //        if (x.FileName.Equals(y.FileName)) return 0;
+    //        return x.FileName.CompareTo(y.FileName);
+    //    }
+    //}
 }

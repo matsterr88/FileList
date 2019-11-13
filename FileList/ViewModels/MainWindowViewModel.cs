@@ -128,6 +128,7 @@ namespace FileList.ViewModels
 
                 FileList.Add(fi);
             }
+            //FileList.Sort(new FileListComparerByFileName());
             FileList.Sort(new FileListComparer());
 
             foreach (var file in FileList.Select((fl, index) => new { Item = fl, Index = index }))
