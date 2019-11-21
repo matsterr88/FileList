@@ -9,8 +9,6 @@ namespace FileList.Models
 {
     class BWorker
     {
-
-
         private BWorker()
         {
 

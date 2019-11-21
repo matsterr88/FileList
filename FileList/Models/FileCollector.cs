@@ -23,7 +23,7 @@ namespace FileList.Models
         {
             _worker = BWorker.getInstance();
             dt = new DataTable("FileList");
-            //FileItems = new List<FileItem>();
+            FileItems = new List<FileItem>();
 
             dt.Columns.Add(new DataColumn("순번"));
             dt.Columns.Add(new DataColumn("전체경로"));
@@ -61,11 +61,11 @@ namespace FileList.Models
             }
         }
         
-        private int _count;
+        private long _count;
         /// <summary>
         /// 진행 상태를 알려줄 카운트, 진행된 파일 수
         /// </summary>
-        public int Count {
+        public long Count {
             get { return _count; }
             set { _count = value; }
         }
@@ -101,8 +101,6 @@ namespace FileList.Models
 
         List<FileItem> FileItems;
         DataTable dt;
-        //FileItem[] FileItems;
-
 
         #endregion
 
@@ -112,7 +110,8 @@ namespace FileList.Models
         public void Init()
         {
             Count = 0;
-            //FileItems =  new List<FileItem>();
+            dt.Dispose();
+            FileItems.Clear();
         }
 
         public void StartProcess()
@@ -149,7 +148,6 @@ namespace FileList.Models
         /// </summary>
         /// <param name="TargetPath"></param>
         /// <returns></returns>
-        //public async Task<Array> CollectFilesAsync(string targetPath)
         public IEnumerable<FileItem> CollectFiles()
         {
             if(TargetPath == null || SavePath == null)
@@ -181,18 +179,14 @@ namespace FileList.Models
 
 
 
-
-            // 파일리스트 저장할 리스트 선언
-            FileItems = new List<FileItem>();
-
             var dirInfo = new DirectoryInfo(TargetPath);
 
-            // 파일리스트 생성 및 메모리에 저장
+            //var EnumFileList_top = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
+            //var EnumFileList = EnumFileList_top.Concat(dirInfo.EnumerateDirectories().AsParallel().SelectMany(di => di.EnumerateFiles("*.*", SearchOption.AllDirectories)));
+            var EnumFileList = dirInfo.EnumerateFiles("*.*", SearchOption.AllDirectories);
+            //var EnumFileList = dirInfo.GetFiles("*.*", SearchOption.AllDirectories);
 
-            var EnumFileList_top = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
-            var EnumFileList = EnumFileList_top.Concat(dirInfo.EnumerateDirectories().AsParallel().SelectMany(di => di.EnumerateFiles("*.*", SearchOption.AllDirectories)));
-
-            foreach (var file in EnumFileList.Select((fl, index) => new { Info = fl, Index = index }))
+            foreach (var file in EnumFileList.Select((fl, index) => new { Info = fl, Index = (long)index }))
             {
                 if (_worker.CancellationPending)
                 {
@@ -201,8 +195,7 @@ namespace FileList.Models
                 }
 
                 FileItem fi = new FileItem();
-                
-                //fi.Index = file.Index;
+
                 fi.FullPath = file.Info.FullName;
                 fi.Path = file.Info.DirectoryName;
                 fi.FileName = file.Info.Name;
@@ -213,22 +206,17 @@ namespace FileList.Models
                 FileItems.Add(fi);
 
                 Count += 1;
-                ReportProg(fi.FileName);
-
-                //FileItems.Append(fi);                
+                ReportProg(new ReportArgs(Count, fi.FileName));
+       
             }
             FileItems.Sort(new FileItemComparer());
-            //Array.Sort(FileItems, new FileListComparer());
+
 
             foreach (var file in FileItems.Select((fl, index) => new { Item = fl, Index = index }))
             {
                 file.Item.Index = file.Index+1;
             }
 
-            //for(int i = 0; i < FileItems.Length; i++)
-            //{
-            //    FileItems[i].Index = i+1;
-            //}
             return FileItems as IEnumerable<FileItem>;
         }
 
@@ -240,11 +228,6 @@ namespace FileList.Models
         /// <returns></returns>
         public DataTable FileItemsToDt()
         {
-            //if(FileItems == null)
-            //{
-            //    return null;
-            //}
-            
             foreach (var item in FileItems)
             {
                 if (_worker.CancellationPending)
@@ -296,13 +279,13 @@ namespace FileList.Models
         {
             if (dt == null)
             {
-                ReportProg("작업에 실패하였습니다.");
+                ReportProg(new ReportArgs(Count, "작업에 실패하였습니다."));
                 return false;
             }
 
             if (File.Exists(SavePath))
             {
-                ReportProg("작업에 실패. 이미 파일이 있습니다.");
+                ReportProg(new ReportArgs(Count, "작업에 실패. 이미 파일이 있습니다."));
                 return false;
             }
 
@@ -330,7 +313,7 @@ namespace FileList.Models
                     }
 
                     pck.Save();
-                    ReportProg("파일 리스트 생성 완료!");
+                    ReportProg(new ReportArgs(Count, "파일 리스트 생성 완료!"));
                     return true;
                 }
                 catch (Exception e)
@@ -344,9 +327,9 @@ namespace FileList.Models
             }
         }
 
-        private void ReportProg(string message)
+        private void ReportProg(ReportArgs a)
         {
-            _worker.ReportProgress(Count, message);
+            _worker.ReportProgress(50, a);
         }
 
         /// <summary>
@@ -365,14 +348,5 @@ namespace FileList.Models
             return nameOnly;
         }
 
-
-        ///// <summary>
-        ///// 프로세스 상태 메시지 업데이트
-        ///// </summary>
-        ///// <param name="statusStr"></param>
-        //private void SetStatus(string statusStr)
-        //{
-        //    StatusString = statusStr;
-        //}
     }
 }

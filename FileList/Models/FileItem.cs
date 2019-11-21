@@ -14,7 +14,7 @@ namespace FileList.Models
     }
     public class FileItem
     {
-        public int Index { get; set; }
+        public long Index { get; set; }
         public string FullPath { get; set; }
         public string Path { get; set; }
         public string FileName { get; set; }
@@ -44,12 +44,4 @@ namespace FileList.Models
         }
     }
 
-    //class FileListComparerByFileName : Comparer<FileItem>
-    //{
-    //    public override int Compare(FileItem x, FileItem y)
-    //    {
-    //        if (x.FileName.Equals(y.FileName)) return 0;
-    //        return x.FileName.CompareTo(y.FileName);
-    //    }
-    //}
 }

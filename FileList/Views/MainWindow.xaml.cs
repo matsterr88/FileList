@@ -35,9 +35,10 @@ namespace FileList
         }
 
         private void workerProgressChanged(object sender, ProgressChangedEventArgs e)
-        {            
-            textBlockCount.Text = e.ProgressPercentage.ToString();
-            textBoxCurrent.Text = e.UserState.ToString();
+        {
+            ReportArgs a = e.UserState as ReportArgs;
+            textBlockCount.Text = a.Count.ToString();
+            textBoxCurrent.Text = a.Message.ToString();
         }
 
         private void workerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -101,8 +102,6 @@ namespace FileList
         private async void MakeListBtn_Click(object sender, RoutedEventArgs e)
         {
             _worker.RunWorkerAsync();
-
-            //_viewModel.MakeFileList();
         }
 
         private void SelectSaveFolderBtn_Click(object sender, RoutedEventArgs e)
