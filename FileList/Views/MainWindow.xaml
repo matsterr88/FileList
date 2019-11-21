@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FileList.ViewModels"
         mc:Ignorable="d"
         FontSize="20"
-        Title="FileList" Height="323" Width="783" ResizeMode="NoResize">
+        Title="FileList" Height="353" Width="783" ResizeMode="NoResize">
     <Window.Resources>
         <local:MainWindowViewModel x:Key="viewModel"/>
     </Window.Resources>
@@ -20,13 +20,15 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"></ColumnDefinition>
             <ColumnDefinition Width="auto"></ColumnDefinition>
-            <ColumnDefinition Width="342"></ColumnDefinition>
-            <ColumnDefinition Width="168"/>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="20"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
@@ -46,16 +48,32 @@
         <Button Grid.Row="2" Grid.Column="4" MinWidth="95" Click="SelectFolderBtn_Click" Margin="5,6">
             <Button.Effect>
                 <DropShadowEffect BlurRadius="10" Opacity="0.5" ShadowDepth="3"/>
-            </Button.Effect> 폴더 선택
+            </Button.Effect> 대상폴더
         </Button>
 
         <Label Grid.Row="3" Grid.Column="1" MinWidth="95" TextBlock.TextAlignment="Center" Margin="5">저장 경로</Label>
-        <TextBox x:Name="savePathBox" Grid.Row="3" Grid.Column="2" MinWidth="500" Margin="5" Width="500" Text="{Binding SaveTargetPath}" Grid.ColumnSpan="2"></TextBox>
+        <TextBox x:Name="savePathBox" Grid.Row="3" Grid.Column="2" MinWidth="500" Margin="5" Width="500" Text="{Binding SavePath}" Grid.ColumnSpan="2"></TextBox>
+        <Button Grid.Row="3" Grid.Column="4" MinWidth="95" Click="SelectSaveFolderBtn_Click" Margin="5,6">
+            <Button.Effect>
+                <DropShadowEffect BlurRadius="10" Opacity="0.5" ShadowDepth="3"/>
+            </Button.Effect> 저장폴더
+        </Button>
 
-        <Button Grid.Row="4" Grid.Column="2" Click="MakeListBtn_Click" Margin="5" Grid.ColumnSpan="2">
+        <DockPanel Grid.Row="4" Grid.Column="1" Margin="0 0 10 0" HorizontalAlignment="Right">
+            <TextBlock x:Name="textBlockCount" Text="{Binding Count}" VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right">개</TextBlock>
+        </DockPanel>
+        <TextBox x:Name="textBoxCurrent" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="5" Width="500" IsReadOnly="True"></TextBox>
+
+        <Button Grid.Row="5" Grid.Column="2" Click="MakeListBtn_Click" Margin="5" Grid.ColumnSpan="2">
             <Button.Effect>
                 <DropShadowEffect BlurRadius="10" ShadowDepth="3" Opacity="0.5"/>
             </Button.Effect> 리스트 생성
+        </Button>
+        <Button Grid.Row="5" Grid.Column="4" MinWidth="95" Click="CalcelBtn_Click" Margin="5,6">
+            <Button.Effect>
+                <DropShadowEffect BlurRadius="10" Opacity="0.5" ShadowDepth="3"/>
+            </Button.Effect> 취소
         </Button>
     </Grid>
 </Window>

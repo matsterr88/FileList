@@ -1,19 +1,12 @@
-﻿using FileList.ViewModels;
+﻿using FileList.Models;
+using FileList.ViewModels;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
+using System.Data;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FileList
 {
@@ -23,12 +16,62 @@ namespace FileList
     public partial class MainWindow : Window
     {
         private readonly MainWindowViewModel _viewModel;
+        private readonly FileCollector _fileCollector;
+        private readonly BackgroundWorker _worker;
 
         public MainWindow()
         {
             InitializeComponent();
             _viewModel = this.DataContext as MainWindowViewModel;
+            _fileCollector = FileCollector.getInstance();
+            _worker = BWorker.getInstance();
+
+            _worker.DoWork += workerDoWork;
+            _worker.RunWorkerCompleted += workerRunWorkerCompleted;
+            _worker.ProgressChanged += workerProgressChanged;
+
+            _worker.WorkerReportsProgress = true;
+            _worker.WorkerSupportsCancellation = true;
         }
+
+        private void workerProgressChanged(object sender, ProgressChangedEventArgs e)
+        {            
+            textBlockCount.Text = e.ProgressPercentage.ToString();
+            textBoxCurrent.Text = e.UserState.ToString();
+        }
+
+        private void workerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                textBoxCurrent.Text = "작업이 취소되었습니다";
+            }
+            else if (e.Error != null)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageBox.Show(e.Error.Message + "\n" + e.ToString());
+                    return;
+                });
+                
+            }
+            
+        }
+
+        private void workerDoWork(object sender, DoWorkEventArgs e)
+        {
+            _fileCollector.Init();
+            _fileCollector.CollectFiles();
+            _fileCollector.FileItemsToDt();
+            _fileCollector.WriteXlsx();
+
+            if (_worker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+        }
+
 
         private void Grid_Drop(object sender, DragEventArgs e)
         {
@@ -55,9 +98,29 @@ namespace FileList
 
         }
 
-        private void MakeListBtn_Click(object sender, RoutedEventArgs e)
+        private async void MakeListBtn_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.MakeFileList();
+            _worker.RunWorkerAsync();
+
+            //_viewModel.MakeFileList();
+        }
+
+        private void SelectSaveFolderBtn_Click(object sender, RoutedEventArgs e)
+        {
+            using (CommonOpenFileDialog dlg = new CommonOpenFileDialog())
+            {
+                dlg.IsFolderPicker = true;
+                CommonFileDialogResult result = dlg.ShowDialog();
+                if (result == CommonFileDialogResult.Ok)
+                {
+                    _viewModel.SaveFolderPath = dlg.FileName;
+                }
+            }
+        }
+
+        private void CalcelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            _worker.CancelAsync();
         }
     }
 }

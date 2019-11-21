@@ -12,7 +12,7 @@ namespace FileList.Models
         Extension = 6,
         Length = 7
     }
-    class FileItem
+    public class FileItem
     {
         public int Index { get; set; }
         public string FullPath { get; set; }
@@ -23,7 +23,7 @@ namespace FileList.Models
         public long Length { get; set; }
     }
 
-    class FileListComparer : Comparer<FileItem>
+    class FileItemComparer : Comparer<FileItem>
     {
         public override int Compare(FileItem x, FileItem y)
         {
