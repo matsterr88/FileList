@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FileList.ViewModels"
         mc:Ignorable="d"
         FontSize="20"
-        Title="FileList" Height="353" Width="783" ResizeMode="NoResize">
+        Title="FileList" Width="783" Height="365" ResizeMode="NoResize">
     <Window.Resources>
         <local:MainWindowViewModel x:Key="viewModel"/>
     </Window.Resources>

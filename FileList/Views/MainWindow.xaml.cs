@@ -35,10 +35,9 @@ namespace FileList
         }
 
         private void workerProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            ReportArgs a = e.UserState as ReportArgs;
-            textBlockCount.Text = a.Count.ToString();
-            textBoxCurrent.Text = a.Message.ToString();
+        {            
+            textBlockCount.Text = e.ProgressPercentage.ToString();
+            textBoxCurrent.Text = e.UserState.ToString();
         }
 
         private void workerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -54,7 +53,7 @@ namespace FileList
                     MessageBox.Show(e.Error.Message + "\n" + e.ToString());
                     return;
                 });
-                
+                textBoxCurrent.Text = "작업 실패";
             }
             
         }

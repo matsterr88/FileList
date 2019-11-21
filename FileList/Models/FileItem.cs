@@ -14,7 +14,7 @@ namespace FileList.Models
     }
     public class FileItem
     {
-        public long Index { get; set; }
+        public int Index { get; set; }
         public string FullPath { get; set; }
         public string Path { get; set; }
         public string FileName { get; set; }

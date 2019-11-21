@@ -30,7 +30,7 @@ namespace FileList.ViewModels
         /// <summary>
         /// 진행 상태를 알려줄 카운트, 진행된 파일 수
         /// </summary>
-        public long Count {
+        public int Count {
             get { return fc.Count; }
             set { 
                 fc.Count = value;

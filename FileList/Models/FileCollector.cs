@@ -61,11 +61,11 @@ namespace FileList.Models
             }
         }
         
-        private long _count;
+        private int _count;
         /// <summary>
         /// 진행 상태를 알려줄 카운트, 진행된 파일 수
         /// </summary>
-        public long Count {
+        public int Count {
             get { return _count; }
             set { _count = value; }
         }
@@ -96,7 +96,7 @@ namespace FileList.Models
 
         private string getSaveFileName()
         {
-            return @"FileList_" + DateTime.Now.ToString("yyMMdd_hhmm") + ".xlsx";
+            return @"FileList_" + DateTime.Now.ToString("yyMMdd_HHmm") + ".xlsx";
         }
 
         List<FileItem> FileItems;
@@ -163,11 +163,17 @@ namespace FileList.Models
 
             if (File.Exists(SavePath))
             {
-                throw new IOException("해당 경로에 파일을 쓸수 없습니다. 이미 파일이 존재할 수 있습니다.");
+                throw new IOException("해당 경로에 파일을 쓸수 없습니다. 이미 파일이 존재할 수 있습니다");
             }
 
             try
             {
+                FileIOPermission writePermission = new FileIOPermission(FileIOPermissionAccess.Write, SavePath);
+                if (!SecurityManager.IsGranted(writePermission))
+                {
+                    throw new UnauthorizedAccessException("'{Savepath}' 경로에 대한 액세스가 거부되었습니다.");
+                }
+
                 FileStream fs = new FileStream(SavePath, FileMode.Create);                
                 fs.Close();
                 File.Delete(SavePath);
@@ -206,7 +212,7 @@ namespace FileList.Models
                 FileItems.Add(fi);
 
                 Count += 1;
-                ReportProg(new ReportArgs(Count, fi.FileName));
+                ReportProg(fi.FileName);
        
             }
             FileItems.Sort(new FileItemComparer());
@@ -234,7 +240,7 @@ namespace FileList.Models
                 {
                     return null;
                 }
-
+                ReportProg("데이터 테이블 생성중...");
                 DataRow row = dt.NewRow();
                 row.ItemArray = new object[] { item.Index, item.FullPath, item.Path, item.FileName, item.FileNameOnly, item.Extension, item.Length };
                 dt.Rows.Add(row);
@@ -279,18 +285,24 @@ namespace FileList.Models
         {
             if (dt == null)
             {
-                ReportProg(new ReportArgs(Count, "작업에 실패하였습니다."));
+                ReportProg("작업에 실패하였습니다.");
                 return false;
             }
 
             if (File.Exists(SavePath))
             {
-                ReportProg(new ReportArgs(Count, "작업에 실패. 이미 파일이 있습니다."));
+                ReportProg("작업에 실패. 이미 파일이 있습니다.");
                 return false;
             }
 
             try
             {
+                FileIOPermission writePermission = new FileIOPermission(FileIOPermissionAccess.Write, SavePath);
+                if (!SecurityManager.IsGranted(writePermission))
+                {
+                    throw new UnauthorizedAccessException("'{Savepath}' 경로에 대한 액세스가 거부되었습니다.");
+                }
+
                 FileStream fs = new FileStream(SavePath, FileMode.Create);
                 fs.Close();
                 File.Delete(SavePath);
@@ -304,6 +316,7 @@ namespace FileList.Models
             {
                 try
                 {
+                    ReportProg("파일 생성중...");
                     ExcelWorksheet ws = pck.Workbook.Worksheets.Add("FileList");
                     ws.Cells["A1"].LoadFromDataTable(dt, true);
 
@@ -313,7 +326,7 @@ namespace FileList.Models
                     }
 
                     pck.Save();
-                    ReportProg(new ReportArgs(Count, "파일 리스트 생성 완료!"));
+                    ReportProg("파일 리스트 생성 완료!");
                     return true;
                 }
                 catch (Exception e)
@@ -327,9 +340,9 @@ namespace FileList.Models
             }
         }
 
-        private void ReportProg(ReportArgs a)
+        private void ReportProg(string status)
         {
-            _worker.ReportProgress(50, a);
+            _worker.ReportProgress(Count, status);
         }
 
         /// <summary>
