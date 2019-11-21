@@ -41,7 +41,7 @@
                     <DropShadowEffect Opacity="0.5" BlurRadius="10" ShadowDepth="3"/>
                 </Rectangle.Effect>
             </Rectangle>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" AllowDrop="True" DragDrop.Drop="Grid_Drop" Text="{Binding StatusString}"></TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" AllowDrop="True" DragDrop.Drop="Grid_Drop" Text="여기에 대상을 끓어놓거나 폴더를 선택하세요"></TextBlock>
         </Grid>
         <Label Grid.Row="2" Grid.Column="1" MinWidth="95" TextBlock.TextAlignment="Center" Margin="5">목표 경로</Label>
         <TextBox x:Name="FolderPathBox" Grid.Row="2" Grid.Column="2" MinWidth="500" IsReadOnly="True" Margin="5" Width="500" Text="{Binding TargetPath}" Grid.ColumnSpan="2"></TextBox>
