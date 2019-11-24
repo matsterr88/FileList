@@ -51,19 +51,39 @@ namespace FileList
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     MessageBox.Show(e.Error.Message + "\n" + e.ToString());
-                    return;
                 });
                 textBoxCurrent.Text = "작업 실패";
             }
-            
+            btnMakeList.IsEnabled = true;
+            btnSelectSave.IsEnabled = true;
+            btnSelectTarget.IsEnabled = true;
+            btnCancel.IsEnabled = false;
+
         }
 
         private void workerDoWork(object sender, DoWorkEventArgs e)
         {
-            _fileCollector.Init();
-            _fileCollector.CollectFiles();
-            _fileCollector.FileItemsToDt();
-            _fileCollector.WriteXlsx();
+            //_fileCollector.Init();
+            //if (_worker.CancellationPending)
+            //{
+            //    e.Cancel = true;
+            //    return;
+            //}
+            //_fileCollector.CollectFiles();
+            //if (_worker.CancellationPending)
+            //{
+            //    e.Cancel = true;
+            //    return;
+            //}
+            //_fileCollector.FileItemsToDt();
+            //if (_worker.CancellationPending)
+            //{
+            //    e.Cancel = true;
+            //    return;
+            //}
+            //_fileCollector.WriteXlsx();
+
+            _fileCollector.StartProcess();
 
             if (_worker.CancellationPending)
             {
@@ -100,6 +120,11 @@ namespace FileList
 
         private async void MakeListBtn_Click(object sender, RoutedEventArgs e)
         {
+            btnMakeList.IsEnabled = false;
+            btnSelectSave.IsEnabled = false;
+            btnSelectTarget.IsEnabled = false;
+            btnCancel.IsEnabled = true;
+
             _worker.RunWorkerAsync();
         }
 

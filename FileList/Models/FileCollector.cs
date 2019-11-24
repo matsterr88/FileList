@@ -22,16 +22,9 @@ namespace FileList.Models
         private FileCollector()
         {
             _worker = BWorker.getInstance();
-            dt = new DataTable("FileList");
-            FileItems = new List<FileItem>();
+            //dt = new DataTable("FileList");
+            //FileItems = new List<FileItem>();
 
-            dt.Columns.Add(new DataColumn("순번"));
-            dt.Columns.Add(new DataColumn("전체경로"));
-            dt.Columns.Add(new DataColumn("폴더경로"));
-            dt.Columns.Add(new DataColumn("파일명(full)"));
-            dt.Columns.Add(new DataColumn("파일명(name only)"));
-            dt.Columns.Add(new DataColumn("확장자"));
-            dt.Columns.Add(new DataColumn("파일크기"));
         }
 
         private static FileCollector fileCollector;
@@ -110,8 +103,17 @@ namespace FileList.Models
         public void Init()
         {
             Count = 0;
-            dt.Dispose();
-            FileItems.Clear();
+            dt = new DataTable("FileList");
+            FileItems = new List<FileItem>();
+
+
+            dt.Columns.Add(new DataColumn("순번"));
+            dt.Columns.Add(new DataColumn("전체경로"));
+            dt.Columns.Add(new DataColumn("폴더경로"));
+            dt.Columns.Add(new DataColumn("파일명(full)"));
+            dt.Columns.Add(new DataColumn("파일명(name only)"));
+            dt.Columns.Add(new DataColumn("확장자"));
+            dt.Columns.Add(new DataColumn("파일크기"));
         }
 
         public void StartProcess()
@@ -119,10 +121,13 @@ namespace FileList.Models
             try
             {
                 Init();
-                CollectFiles();
                 if (_worker.CancellationPending)
                 {
-                    
+                    return;
+                }
+                CollectFiles();
+                if (_worker.CancellationPending)
+                {                    
                     return;
                 }
                 FileItemsToDt();
@@ -317,14 +322,12 @@ namespace FileList.Models
                 try
                 {
                     ReportProg("파일 생성중...");
-                    ExcelWorksheet ws = pck.Workbook.Worksheets.Add("FileList");
-                    ws.Cells["A1"].LoadFromDataTable(dt, true);
-
                     if (_worker.CancellationPending)
                     {
                         return false;
                     }
-
+                    ExcelWorksheet ws = pck.Workbook.Worksheets.Add("FileList");
+                    ws.Cells["A1"].LoadFromDataTable(dt, true);
                     pck.Save();
                     ReportProg("파일 리스트 생성 완료!");
                     return true;

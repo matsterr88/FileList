@@ -41,11 +41,11 @@
                     <DropShadowEffect Opacity="0.5" BlurRadius="10" ShadowDepth="3"/>
                 </Rectangle.Effect>
             </Rectangle>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" AllowDrop="True" DragDrop.Drop="Grid_Drop" Text="여기에 대상을 끓어놓거나 폴더를 선택하세요"></TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" AllowDrop="True" DragDrop.Drop="Grid_Drop" Text="여기에 대상을 끌어 놓거나 폴더를 선택하세요"></TextBlock>
         </Grid>
         <Label Grid.Row="2" Grid.Column="1" MinWidth="95" TextBlock.TextAlignment="Center" Margin="5">목표 경로</Label>
         <TextBox x:Name="FolderPathBox" Grid.Row="2" Grid.Column="2" MinWidth="500" IsReadOnly="True" Margin="5" Width="500" Text="{Binding TargetPath}" Grid.ColumnSpan="2"></TextBox>
-        <Button Grid.Row="2" Grid.Column="4" MinWidth="95" Click="SelectFolderBtn_Click" Margin="5,6">
+        <Button x:Name="btnSelectTarget" Grid.Row="2" Grid.Column="4" MinWidth="95" Click="SelectFolderBtn_Click" Margin="5,6">
             <Button.Effect>
                 <DropShadowEffect BlurRadius="10" Opacity="0.5" ShadowDepth="3"/>
             </Button.Effect> 대상폴더
@@ -53,7 +53,7 @@
 
         <Label Grid.Row="3" Grid.Column="1" MinWidth="95" TextBlock.TextAlignment="Center" Margin="5">저장 경로</Label>
         <TextBox x:Name="savePathBox" Grid.Row="3" Grid.Column="2" MinWidth="500" Margin="5" Width="500" Text="{Binding SavePath}" Grid.ColumnSpan="2"></TextBox>
-        <Button Grid.Row="3" Grid.Column="4" MinWidth="95" Click="SelectSaveFolderBtn_Click" Margin="5,6">
+        <Button x:Name="btnSelectSave" Grid.Row="3" Grid.Column="4" MinWidth="95" Click="SelectSaveFolderBtn_Click" Margin="5,6">
             <Button.Effect>
                 <DropShadowEffect BlurRadius="10" Opacity="0.5" ShadowDepth="3"/>
             </Button.Effect> 저장폴더
@@ -65,12 +65,12 @@
         </DockPanel>
         <TextBox x:Name="textBoxCurrent" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="5" Width="500" IsReadOnly="True"></TextBox>
 
-        <Button Grid.Row="5" Grid.Column="2" Click="MakeListBtn_Click" Margin="5" Grid.ColumnSpan="2">
+        <Button x:Name="btnMakeList" Grid.Row="5" Grid.Column="2" Click="MakeListBtn_Click" Margin="5" Grid.ColumnSpan="2">
             <Button.Effect>
                 <DropShadowEffect BlurRadius="10" ShadowDepth="3" Opacity="0.5"/>
             </Button.Effect> 리스트 생성
         </Button>
-        <Button Grid.Row="5" Grid.Column="4" MinWidth="95" Click="CalcelBtn_Click" Margin="5,6">
+        <Button x:Name="btnCancel" Grid.Row="5" Grid.Column="4" MinWidth="95" Click="CalcelBtn_Click" Margin="5,6" IsEnabled="False">
             <Button.Effect>
                 <DropShadowEffect BlurRadius="10" Opacity="0.5" ShadowDepth="3"/>
             </Button.Effect> 취소
